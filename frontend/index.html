@@ -1,44 +1,46 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Frontend Docker</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend - TP Docker</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Docker Compose App</h1>
-    <button onclick="fetchData()">Get Backend Data</button>
-    <div id="result">Click to test...</div>
-  </div>
+    <div class="container">
+        <h1>TP Docker Avancé</h1>
+        <h2>Frontend Statique</h2>
+        
+        <div id="api-response">Loading API data...</div>
+        <div id="db-response">Loading Database data...</div>
+    </div>
 
-  <script>
-    async function fetchData() {
-      const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = 'Loading...';
+    <script>
+        async function fetchData() {
+            try {
+                // Fetch API status
+                const apiResponse = await fetch('http://localhost:3000/api');
+                if (!apiResponse.ok) throw new Error('API request failed');
+                const apiData = await apiResponse.json();
+                document.getElementById('api-response').innerText = JSON.stringify(apiData, null, 2);
 
-      try {
-        // localhost:3000 (accessible depuis navigateur)
-        const response = await fetch('http://localhost:3000/api');
-        const data = await response.json();
+                // Fetch database data
+                const dbResponse = await fetch('http://localhost:3000/db');
+                if (!dbResponse.ok) throw new Error('Database request failed');
+                const dbData = await dbResponse.json();
+                document.getElementById('db-response').innerText = JSON.stringify(dbData, null, 2);
 
-        resultDiv.innerHTML = `
-          <pre>${JSON.stringify(data, null, 2)}</pre>
-          <p style="color:green">Success via localhost:3000!</p>
-        `;
-      } catch (error) {
-        resultDiv.innerHTML = `
-          <p style="color:red">Error: ${error.message}</p>
-          <p>Check CORS in backend logs</p>
-        `;
-        console.error('Fetch error:', error);
-      }
-    }
+            } catch (error) {
+                const errorMsg = `Error: ${error.message}`;
+                document.getElementById('api-response').innerText = errorMsg;
+                document.getElementById('db-response').innerText = errorMsg;
+            }
+        }
 
-    // Test auto après 1s
-    setTimeout(fetchData, 1000);
-  </script>
+        // Poll every second
+        setInterval(fetchData, 1000);
+        // Initial call
+        fetchData();
+    </script>
 </body>
 </html>
-
