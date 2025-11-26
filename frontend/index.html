@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frontend Docker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Docker Compose App</h1>
+    <button onclick="fetchData()">Get Backend Data</button>
+    <div id="result">Click to test...</div>
+  </div>
+
+  <script>
+    async function fetchData() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = 'Loading...';
+
+      try {
+        // localhost:3000 (accessible depuis navigateur)
+        const response = await fetch('http://localhost:3000/api');
+        const data = await response.json();
+
+        resultDiv.innerHTML = `
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+          <p style="color:green">Success via localhost:3000!</p>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <p style="color:red">Error: ${error.message}</p>
+          <p>Check CORS in backend logs</p>
+        `;
+        console.error('Fetch error:', error);
+      }
+    }
+
+    // Test auto après 1s
+    setTimeout(fetchData, 1000);
+  </script>
+</body>
+</html>
+

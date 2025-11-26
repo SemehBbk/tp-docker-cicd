@@ -1,0 +1,47 @@
+version: "3.3"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: tp-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+    networks:
+      - webnet
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: tp-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - webnet
+
+  database:
+    build:
+      context: ./database
+    container_name: tp-database
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tpdb
+      MYSQL_USER: tpuser
+      MYSQL_PASSWORD: tppass
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - webnet
+volumes:
+  db_data:
+    
+networks:
+  webnet:
+
+
