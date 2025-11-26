@@ -56,8 +56,8 @@ jobs:
 
       - name: Test DB Endpoint
         run: |
-          echo "Test de /db"
-          curl -f http://localhost:3000/db
+          echo "Test de /api/users"
+          curl -f http://localhost:3000/api/users
 
       - name: Show logs on failure
         if: failure()
