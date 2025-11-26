@@ -46,6 +46,15 @@ function connectDB() {
 }
 
 connectDB();
+app.get("/db", (req, res) => {
+  db.query("SELECT 1", (err) => {
+    if (err) {
+      console.error("DB Error:", err);
+      return res.status(500).json({ status: "error", message: "DB not connected" });
+    }
+    res.json({ status: "ok", message: "DB connection OK" });
+  });
+});
 
 app.get("/api", (req, res) => {
   res.json({
